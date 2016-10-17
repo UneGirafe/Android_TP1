@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Machine à spam</string>
+    <string name="number_label">Numéro</string>
+    <string name="edit_number">Saisis le(s) numéro(s)</string>
+    <string name="message_label">Message</string>
+    <string name="edit_message">Tape ton message</string>
+    <string name="send_button">Envoyer</string>
+    <string name="sent_message">Message envoyé !</string>
+</resources>
