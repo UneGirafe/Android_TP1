@@ -6,6 +6,6 @@ package fr.miage.tp1_couvrat_khomany;
 
 public class TooShortNumException extends Exception {
     public TooShortNumException(String number) {
-        super("Le numéro " + number + "est trop court" );
+        super("Le numéro " + number + " est trop court" );
     }
 }
