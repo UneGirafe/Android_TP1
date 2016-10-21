@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                         //android.widget.Toast.makeText(getApplicationContext(), "Veuillez entrer un numéro de téléphone", android.widget.Toast.LENGTH_SHORT).show();
                         throw new EmptyFieldException(getApplicationContext());
 
-                    } else if (curNum.length() < 10) {
+                    } else if (curNum.length() < 4) {
                         Log.d(TAG,"num.nextToken().length() --> "+ curNum.length());
 
                         //toaster.show("Le numéro de téléphone est trop court");
