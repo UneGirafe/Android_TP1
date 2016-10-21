@@ -24,44 +24,53 @@ public class MainActivity extends AppCompatActivity {
         toaster = new ToastMsg(getApplicationContext());
     }
 
-    protected StringTokenizer getNumbers(){
-        EditText text = (EditText)findViewById(R.id.editPhoneNum);
+    // Récupère la liste des numéros de téléphone séparés par une virgule
+    protected StringTokenizer getNumbers() {
+        EditText text = (EditText) findViewById(R.id.editPhoneNum);
         String numbers = text.getText().toString();
         StringTokenizer st = new StringTokenizer(numbers, ",");
 
         return st;
     }
 
-    protected String getMessage(){
-        EditText text = (EditText)findViewById(R.id.editMessage);
+    // Récupère le contenu du message
+    protected String getMessage() {
+        EditText text = (EditText) findViewById(R.id.editMessage);
 
-        return  text.getText().toString();
+        return text.getText().toString();
     }
 
+    /*=========================================
+                 ENVOI DU MESSAGE
+    ===========================================*/
 
+    // Permet d'envoyer un message à un ou plusieurs numéros
     public void sendSMS(View view) throws EmptyFieldException, TooShortNumException {
         String msg = getMessage();
         StringTokenizer num = getNumbers();
+        System.out.println("Appuie sur le bouton Envoyer");
 
-        Log.d(TAG,"nombre de tokens --> " + num.countTokens() );
-        Log.d(TAG,"msg est vide ? --> " + msg.isEmpty());
-        Log.d(TAG,"message saisi --> " + msg.toString());
+        Log.d(TAG, "nombre de tokens --> " + num.countTokens());
+        Log.d(TAG, "msg est vide ? --> " + msg.isEmpty());
+        Log.d(TAG, "message saisi --> " + msg.toString());
 
         // Si aucun numéro de téléphone n'a été entré
-        if(num.countTokens() == 0){
+        if (num.countTokens() == 0) {
 
             toaster.show("Veuillez entrer un numéro de téléphone");
-            //android.widget.Toast.makeText(getApplicationContext(), "Veuillez entrer un numéro de téléphone", android.widget.Toast.LENGTH_SHORT).show();
+            System.out.println("Aucun numéro de téléphone renseigné");
         }
-        //Test message is empty
+        // Si aucun message n'a été renseigné
         else if (msg.isEmpty()) {
 
             toaster.show("Veuillez entrer un message");
             //android.widget.Toast.makeText(getApplicationContext(), "Veuillez entrer un message", android.widget.Toast.LENGTH_SHORT).show();
             //throw new EmptyFieldException(getApplicationContext());
 
+            // S'il y a au moins un numéro et un message
         } else {
             Log.d(TAG, "Message existant");
+            System.out.println("Numéro de téléphone et message renseignés");
 
             //tant qu'il y a un numéro à traiter
             while (num.hasMoreElements()) {
@@ -71,26 +80,19 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "WHILE -- Un numéro de téléphone à traiter --> " + curNum);
 
                 try {
-                    Log.d(TAG,"num.nextToken().isEmpty() --> "+ curNum.isEmpty());
-                    Log.d(TAG,"num.nextToken().length() --> "+ curNum.length());
+                    Log.d(TAG, "num.nextToken().isEmpty() --> " + curNum.isEmpty());
+                    Log.d(TAG, "num.nextToken().length() --> " + curNum.length());
 
-                    if (curNum.isEmpty()) {
-                        Log.d(TAG,"Token vide");
-
-                        toaster.show("Veuillez entrer un numéro de téléphone");
-                        //android.widget.Toast.makeText(getApplicationContext(), "Veuillez entrer un numéro de téléphone", android.widget.Toast.LENGTH_SHORT).show();
-                        throw new EmptyFieldException(getApplicationContext());
-
-                    } else if (curNum.length() < 4) {
-                        Log.d(TAG,"num.nextToken().length() --> "+ curNum.length());
+                    if (curNum.length() < 4) {
+                        Log.d(TAG, "num.nextToken().length() --> " + curNum.length());
 
                         //toaster.show("Le numéro de téléphone est trop court");
                         //android.widget.Toast.makeText(getApplicationContext(), "Le numéro de téléphone est trop court", android.widget.Toast.LENGTH_SHORT).show();
                         throw new TooShortNumException(curNum.toString());
 
                     } else {
-                        Log.d(TAG,"num.nextToken() --> "+ curNum);
-                        Log.d(TAG,"msg --> "+ msg);
+                        Log.d(TAG, "num.nextToken() --> " + curNum);
+                        Log.d(TAG, "msg --> " + msg);
 
                         SmsManager.getDefault().sendTextMessage(curNum, null, msg, null, null);
 
@@ -102,18 +104,13 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (Exception e) {
                     Log.d(TAG, e.toString());
-
+                    e.printStackTrace();
                     toaster.show(e.getMessage());
-                    /*Context context = getApplicationContext();
-                    CharSequence text = e.getMessage();
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-                    toast.show();*/
                 }
+
+                ((EditText) findViewById(R.id.editMessage)).getText().clear();
+                System.out.println("Message effacé");
             }
-            ((EditText) findViewById(R.id.editMessage)).getText().clear();
         }
     }
 }

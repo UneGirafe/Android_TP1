@@ -17,7 +17,11 @@ public class ToastMsg {
 
     public void show(CharSequence message){
         //Show a success toaster
+<<<<<<< HEAD
         android.widget.Toast toast = android.widget.Toast.makeText(ctxt, message, duration);
+=======
+        android.widget.Toast toast = android.widget.Toast.makeText(context, msg, duration);
+>>>>>>> 46d5192425111f2d15ad8051b03cce827bce9776
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
