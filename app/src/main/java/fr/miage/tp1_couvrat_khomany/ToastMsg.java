@@ -12,7 +12,7 @@ public class ToastMsg {
 
         int duration = android.widget.Toast.LENGTH_SHORT;
         //Show a success toaster
-        android.widget.Toast toast = android.widget.Toast.makeText(context, "test", duration);
+        android.widget.Toast toast = android.widget.Toast.makeText(context, msg, duration);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
