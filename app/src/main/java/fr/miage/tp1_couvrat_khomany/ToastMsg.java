@@ -2,26 +2,25 @@ package fr.miage.tp1_couvrat_khomany;
 
 import android.content.Context;
 import android.view.Gravity;
+import android.widget.Toast;
 
 /**
  * Created by Anice on 20/10/16.
  */
 
-public class ToastMsg {
-    private Context ctxt ;
+public class ToastMsg extends Toast {
     public static  int duration = android.widget.Toast.LENGTH_SHORT ;
-
+    public Context ctxt ;
+    //constructor
     public ToastMsg(Context context){
+        super(context);
         ctxt = context;
     }
 
-    public void show(CharSequence message){
-        //Show a success toaster
-<<<<<<< HEAD
-        android.widget.Toast toast = android.widget.Toast.makeText(ctxt, message, duration);
-=======
-        android.widget.Toast toast = android.widget.Toast.makeText(context, msg, duration);
->>>>>>> 46d5192425111f2d15ad8051b03cce827bce9776
+
+    public void show(CharSequence msg){
+        android.widget.Toast toast = Toast.makeText(ctxt,msg,duration);
+
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }

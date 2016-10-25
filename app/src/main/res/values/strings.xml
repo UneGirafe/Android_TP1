@@ -6,4 +6,5 @@
     <string name="edit_message">Tape ton message</string>
     <string name="send_button">Envoyer</string>
     <string name="sent_message">Message envoyé !</string>
+    <string name="browse_button">Rechercher</string>
 </resources>
