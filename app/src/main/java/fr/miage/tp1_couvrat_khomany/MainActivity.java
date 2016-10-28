@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         else if (msg.isEmpty()) {
 
             toaster.show("Veuillez entrer un message");
-            //android.widget.Toast.makeText(getApplicationContext(), "Veuillez entrer un message", android.widget.Toast.LENGTH_SHORT).show();
             //throw new EmptyFieldException(getApplicationContext());
 
             // S'il y a au moins un numéro et un message
@@ -93,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
                     if (curNum.length() < 4) {
                         Log.d(TAG, "num.nextToken().length() --> " + curNum.length());
-
-                        //toaster.show("Le numéro de téléphone est trop court");
-                        //android.widget.Toast.makeText(getApplicationContext(), "Le numéro de téléphone est trop court", android.widget.Toast.LENGTH_SHORT).show();
                         throw new TooShortNumException(curNum);
 
                     } else {
@@ -105,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
                         SmsManager.getDefault().sendTextMessage(curNum, null, msg, null, null);
 
                         Log.d(TAG, "SMS envoyé");
-                        //android.widget.Toast.makeText(getApplicationContext(), "Message envoyé !", android.widget.Toast.LENGTH_SHORT).show();
 
                         toaster.show("Message envoyé !");
                     }
@@ -117,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 ((EditText) findViewById(R.id.editMessage)).getText().clear();
-                System.out.println("Message effacé");
+                Log.d(TAG, "Message effacé");
             }
         }
     }
