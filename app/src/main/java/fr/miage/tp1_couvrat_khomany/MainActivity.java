@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         // Si aucun message n'a été renseigné
         else if (msg.isEmpty()) {
             toaster.show("Veuillez entrer un message");
+
             // S'il y a au moins un numéro et un message
         } else {
             Log.d(TAG, "Message existant");
@@ -93,9 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
                     if (curNum.length() < 4) {
                         Log.d(TAG, "num.nextToken().length() --> " + curNum.length());
-
-                        //toaster.show("Le numéro de téléphone est trop court");
-                        //android.widget.Toast.makeText(getApplicationContext(), "Le numéro de téléphone est trop court", android.widget.Toast.LENGTH_SHORT).show();
                         throw new TooShortNumException(curNum);
 
                     } else {
@@ -103,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "msg --> " + msg);
 
                         int i;
-                        for ( i = 0; i<howMany.getValue(); i++) {
+                        for ( i = 1; i<howMany.getValue(); i++) {
 
                             SmsManager.getDefault().sendTextMessage(curNum, null, msg, null, null);
                             Log.d(TAG, " SMS envoyé");
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 ((EditText) findViewById(R.id.editMessage)).getText().clear();
-                System.out.println("Message effacé");
+                Log.d(TAG, "Message effacé");
             }
         }
     }
@@ -184,21 +182,5 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.w(TAG, "Warning: activity result not ok");
         }
-    }
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
     }
 }
