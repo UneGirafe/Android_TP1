@@ -21,6 +21,15 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.3"
+        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
+        <dex dex="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-base-8.4.0_d00875114c39cc220ef74eacd75683692eee6bd7\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\24.2.1\jars\libs\internal_impl-24.2.1.jar"
         jumboMode="true"
         optimize="true"
@@ -61,8 +70,17 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.3"
-        sha1="abedf57649a9dcd9599a819dd78eef92e0ac2e56">
+        sha1="615f72837aa44f1f226799940e7080c0e3706336">
         <dex dex="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_2d2757efbe9e09b90ef530328b6afba6a3429b53\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.3"
+        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
+        <dex dex="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-basement-8.4.0_cda54fad37ab3013c1cd690baa140aff5810188f\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -135,6 +153,15 @@
         revision="24.0.3"
         sha1="8de3aafecbdf98a61db6427f008f2d515bcd2544">
         <dex dex="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-24.2.1_24345ab30ec06b2c00646023fc18a8944343c635\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appindexing\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.3"
+        sha1="65d086ee9daaf87b5af62ad24471edafa433354c">
+        <dex dex="C:\Users\Gautier\AndroidStudioProjects\TP1_COUVRAT_KHOMANY\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-appindexing-8.4.0_15366e4f035ed4af353c3e50f4b15f9b703501c1\classes.dex" />
     </item>
     <item
         is-multidex="true"

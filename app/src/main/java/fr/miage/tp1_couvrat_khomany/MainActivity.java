@@ -1,7 +1,5 @@
 package fr.miage.tp1_couvrat_khomany;
 
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,30 +8,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.NumberPicker;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.StringTokenizer;
-import java.util.jar.Attributes;
 
 public class MainActivity extends AppCompatActivity {
+
     // Variable de tag permettant d'ajouter des messages au Log
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static ToastMsg toaster;
-    static final int PICK_CONTACT_REQUEST = 1;  // The request code
+    static final int PICK_CONTACT_REQUEST = 1;  // Identifiant de la requête de selection des contacts
+    private static final int SPAM_DEFAULT = 1;  //nombre par défaut de sms envoyés
+    private static final int SPAM_MAX = 30;
+    private ToastMsg toaster;
+    private NumberPicker howMany;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toaster = new ToastMsg(getApplicationContext());
+        howMany = (NumberPicker) findViewById(R.id.how_many);
+        howMany.setValue(SPAM_DEFAULT);
+        howMany.setMaxValue(SPAM_MAX);
     }
 
     // Récupère la liste des numéros de téléphone séparés par une virgule
@@ -64,17 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Si aucun numéro de téléphone n'a été entré
         if (num.countTokens() == 0) {
-
             toaster.show("Veuillez entrer un numéro de téléphone");
             System.out.println("Aucun numéro de téléphone renseigné");
         }
         // Si aucun message n'a été renseigné
         else if (msg.isEmpty()) {
-
             toaster.show("Veuillez entrer un message");
-            //android.widget.Toast.makeText(getApplicationContext(), "Veuillez entrer un message", android.widget.Toast.LENGTH_SHORT).show();
-            //throw new EmptyFieldException(getApplicationContext());
-
             // S'il y a au moins un numéro et un message
         } else {
             Log.d(TAG, "Message existant");
@@ -102,12 +102,13 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "num.nextToken() --> " + curNum);
                         Log.d(TAG, "msg --> " + msg);
 
-                        SmsManager.getDefault().sendTextMessage(curNum, null, msg, null, null);
+                        int i;
+                        for ( i = 0; i<howMany.getValue(); i++) {
 
-                        Log.d(TAG, "SMS envoyé");
-                        //android.widget.Toast.makeText(getApplicationContext(), "Message envoyé !", android.widget.Toast.LENGTH_SHORT).show();
-
-                        toaster.show("Message envoyé !");
+                            SmsManager.getDefault().sendTextMessage(curNum, null, msg, null, null);
+                            Log.d(TAG, " SMS envoyé");
+                        }
+                            toaster.show(i + "Messages envoyés !");
                     }
 
                 } catch (Exception e) {
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -141,12 +143,12 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         Uri contactUri = data.getData();
                         String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER
-                                              , ContactsContract.Contacts.DISPLAY_NAME
+                                , ContactsContract.Contacts.DISPLAY_NAME
                         };
                         cursor = getContentResolver().query(contactUri, projection, null, null, null);
 
                         int phoneIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                        int nameIdx  = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                        int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 
                         // let's just get the first number
                         if (cursor.moveToFirst()) {
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Log.w(TAG, "No results");
                         }
+
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to get phone data", e);
 
@@ -170,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (new StringTokenizer(editNumbers.getText().toString(), ",").hasMoreTokens()) {
                             editNumbers.append("," + newNumber);
-                        }else{
+                        } else {
                             editNumbers.setText(newNumber);
                         }
                     }
@@ -181,5 +184,21 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.w(TAG, "Warning: activity result not ok");
         }
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
     }
 }
