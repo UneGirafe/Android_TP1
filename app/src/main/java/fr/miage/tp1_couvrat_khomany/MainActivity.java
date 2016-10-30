@@ -3,19 +3,21 @@ package fr.miage.tp1_couvrat_khomany;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.NumberPicker;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.android.ex.chips.BaseRecipientAdapter;
+import com.android.ex.chips.RecipientEditTextView;
+import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 
 import java.util.StringTokenizer;
 
@@ -39,15 +41,54 @@ public class MainActivity extends AppCompatActivity {
         howMany = (NumberPicker) findViewById(R.id.how_many);
         howMany.setValue(SPAM_DEFAULT);
         howMany.setMaxValue(SPAM_MAX);
+
+
+
+
+        final RecipientEditTextView phoneRetv =
+                (RecipientEditTextView) findViewById(R.id.chipsContact);
+        phoneRetv.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        BaseRecipientAdapter adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, this);
+        adapter.setShowMobileOnly(true);
+        phoneRetv.setAdapter(adapter);
+        phoneRetv.dismissDropDownOnItemSelected(true);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                DrawableRecipientChip[] chips = phoneRetv.getSortedRecipients();
+                for (DrawableRecipientChip chip : chips) {
+                    Log.v("DrawableChip", chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
+                }
+            }
+        }, 5000);
+
+        final ImageButton showAll = (ImageButton) findViewById(R.id.show_all);
+        showAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                phoneRetv.showAllContacts();
+            }
+        });
+
+/*        // creates an autocomplete for phone number contacts
+        final RecipientEditTextView phoneRetv = (RecipientEditTextView) findViewById(R.id.chipsContact);
+        phoneRetv.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        BaseRecipientAdapter baseRecipientAdapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, this);
+
+// Queries for all phone numbers. Includes phone numbers marked as "mobile" and "others".
+// If set as true, baseRecipientAdapter will query only for phone numbers marked as "mobile".
+        baseRecipientAdapter.setShowMobileOnly(false);
+
+        phoneRetv.setAdapter(baseRecipientAdapter);*/
     }
 
     // Récupère la liste des numéros de téléphone séparés par une virgule
     protected StringTokenizer getNumbers() {
         EditText text = (EditText) findViewById(R.id.editPhoneNum);
         String numbers = text.getText().toString();
-        StringTokenizer st = new StringTokenizer(numbers, ",");
 
-        return st;
+        return new StringTokenizer(numbers, ",");
     }
 
     // Récupère le contenu du message
@@ -101,12 +142,13 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "msg --> " + msg);
 
                         int i;
-                        for ( i = 1; i<howMany.getValue(); i++) {
+                        for ( i = 0 ; i<howMany.getValue(); i++) {
+
 
                             SmsManager.getDefault().sendTextMessage(curNum, null, msg, null, null);
                             Log.d(TAG, " SMS envoyé");
                         }
-                            toaster.show(i + "Messages envoyés !");
+                            toaster.show(i + "messages envoyés à " + curNum +"!");
                     }
 
                 } catch (Exception e) {
@@ -148,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                         int phoneIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                         int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 
-                        // let's just get the first number
+
                         if (cursor.moveToFirst()) {
                             newNumber = cursor.getString(phoneIdx);
                             newName = cursor.getString(nameIdx);

@@ -14,7 +14,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
     <LinearLayout
         android:orientation="horizontal"
@@ -26,25 +27,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/number_label"
-            android:layout_weight="0"
             />
 
         <Space
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_width="10dp"
+            android:layout_height="10dp" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:inputType="phone"
+            android:layout_weight="1"
             android:hint="@string/edit_number"
-            android:id="@+id/editPhoneNum"/>
+            android:id="@+id/editPhoneNum"
+            android:padding="@dimen/activity_vertical_margin"/>
 
         <Space
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_width="10dp"
+            android:layout_height="10dp" />
 
         <Button
             android:text="@string/browse_button"
@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/browse_button"
             android:onClick="pickContact"
+            style="@style/Widget.AppCompat.Light.ActionButton"
             />
 
     </LinearLayout>
@@ -69,7 +70,7 @@
         <TextView
             android:text="@string/how_many_label"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:id="@+id/how_many_label"
             android:layout_weight="1"
             />
@@ -79,8 +80,9 @@
             android:layout_height="50dp"
             android:inputType="number"
             android:layout_gravity="center"
-            android:solidColor="@color/colorPrimary"
-            android:id="@+id/how_many">
+            android:solidColor="@color/common_plus_signin_btn_text_light"
+            android:id="@+id/how_many"
+            android:scrollbarStyle="outsideInset">
         </NumberPicker>
 
     </LinearLayout>
@@ -101,11 +103,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/messageLabel"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autoLink="all"
             android:inputType="textAutoComplete|textAutoCorrect|textCapSentences|textMultiLine"
             android:hint="@string/edit_message"
             android:ems="10"
@@ -119,7 +123,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="sendSMS"
-        android:elevation="2dp"
-        android:id="@+id/send" />
+        android:id="@+id/send"
+        style="@style/Widget.AppCompat.Button.Colored"
+        />
+
+
+    <LinearLayout
+        android:layout_marginTop="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.android.ex.chips.RecipientEditTextView
+            android:id="@+id/chipsContact"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="yolo"
+            android:minHeight="58dp" />
+
+    </LinearLayout>
 
 </LinearLayout>
+
+
+
