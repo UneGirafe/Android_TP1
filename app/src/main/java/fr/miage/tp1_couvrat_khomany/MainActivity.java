@@ -1,12 +1,16 @@
 package fr.miage.tp1_couvrat_khomany;
 
+import android.app.DownloadManager;
+import android.content.ContentProvider;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.opengl.ETC1;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.VectorEnabledTintResources;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -21,15 +25,17 @@ import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 
 import java.util.StringTokenizer;
 
+
 public class MainActivity extends AppCompatActivity {
 
     // Variable de tag permettant d'ajouter des messages au Log
     private static final String TAG = MainActivity.class.getSimpleName();
-    static final int PICK_CONTACT_REQUEST = 1;  // Identifiant de la requête de selection des contacts
-    private static final int SPAM_DEFAULT = 1;  //nombre par défaut de sms envoyés
+    private static final int PICK_CONTACT_REQUEST = 1;  // Identifiant de la requête de selection des contacts
+    private static final int SPAM_DEFAULT = 0;  //nombre par défaut de sms envoyés
     private static final int SPAM_MAX = 30;
     private ToastMsg toaster;
     private NumberPicker howMany;
+    private RecipientEditTextView phoneRetv;
 
 
 
@@ -41,12 +47,9 @@ public class MainActivity extends AppCompatActivity {
         howMany = (NumberPicker) findViewById(R.id.how_many);
         howMany.setValue(SPAM_DEFAULT);
         howMany.setMaxValue(SPAM_MAX);
+        howMany.setMinValue(SPAM_DEFAULT);
 
-
-
-
-        final RecipientEditTextView phoneRetv =
-                (RecipientEditTextView) findViewById(R.id.chipsContact);
+        phoneRetv = (RecipientEditTextView) findViewById(R.id.chipsContact);
         phoneRetv.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         BaseRecipientAdapter adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, this);
         adapter.setShowMobileOnly(true);
@@ -70,85 +73,64 @@ public class MainActivity extends AppCompatActivity {
                 phoneRetv.showAllContacts();
             }
         });
-
-/*        // creates an autocomplete for phone number contacts
-        final RecipientEditTextView phoneRetv = (RecipientEditTextView) findViewById(R.id.chipsContact);
-        phoneRetv.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-        BaseRecipientAdapter baseRecipientAdapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, this);
-
-// Queries for all phone numbers. Includes phone numbers marked as "mobile" and "others".
-// If set as true, baseRecipientAdapter will query only for phone numbers marked as "mobile".
-        baseRecipientAdapter.setShowMobileOnly(false);
-
-        phoneRetv.setAdapter(baseRecipientAdapter);*/
-    }
-
-    // Récupère la liste des numéros de téléphone séparés par une virgule
-    protected StringTokenizer getNumbers() {
-        EditText text = (EditText) findViewById(R.id.editPhoneNum);
-        String numbers = text.getText().toString();
-
-        return new StringTokenizer(numbers, ",");
     }
 
     // Récupère le contenu du message
     protected String getMessage() {
         EditText text = (EditText) findViewById(R.id.editMessage);
 
-        return text.getText().toString();
+        return text.getText().toString().trim();
+    }
+
+    protected StringTokenizer getNumbers(){
+        EditText editText = (EditText) findViewById(R.id.chipsContact);
+        String st = editText.getText().toString().trim();
+
+        return new StringTokenizer(st,",");
     }
 
     // Permet d'envoyer un message à un ou plusieurs numéros
     public void sendSMS(View view) throws EmptyFieldException, TooShortNumException {
+
         String msg = getMessage();
-        StringTokenizer num = getNumbers();
-        System.out.println("Appuie sur le bouton Envoyer");
+        //DrawableRecipientChip[] chips = phoneRetv.getRecipients();
+        //Log.d(TAG,"nombre de chips " + chips.length );
+        StringTokenizer contacts = getNumbers();
+        Log.d(TAG, " NB TOKENS : " + contacts.countTokens());
 
-        Log.d(TAG, "nombre de tokens --> " + num.countTokens());
-        Log.d(TAG, "msg est vide ? --> " + msg.isEmpty());
-        Log.d(TAG, "message saisi --> " + msg);
-
-        // Si aucun numéro de téléphone n'a été entré
-        if (num.countTokens() == 0) {
-            toaster.show("Veuillez entrer un numéro de téléphone");
-            System.out.println("Aucun numéro de téléphone renseigné");
+        //aucun contact sélectionné
+        if (contacts.countTokens() == 0 ){
+            toaster.show("Veuillez séléctionner un contact");
         }
         // Si aucun message n'a été renseigné
         else if (msg.isEmpty()) {
             toaster.show("Veuillez entrer un message");
-
             // S'il y a au moins un numéro et un message
+            Log.d(TAG, "msg est vide ? --> " + msg.isEmpty());
+            Log.d(TAG, "message saisi --> " + msg);
         } else {
-            Log.d(TAG, "Message existant");
-            System.out.println("Numéro de téléphone et message renseignés");
+            Log.d(TAG, "Contact et Message existant");
+            Log.d(TAG, "msg --> " + msg);
 
-            //tant qu'il y a un numéro à traiter
-            while (num.hasMoreElements()) {
+            //pour chaque contact sélectionné
+        while (contacts.hasMoreTokens()) {
+            String curNum = contacts.nextToken();
 
-                //récupère le token courant
-                String curNum = num.nextToken();
-                Log.d(TAG, "WHILE -- Un numéro de téléphone à traiter --> " + curNum);
+            Log.d(TAG,"Numéro de téléphone à traiter " + curNum);
 
                 try {
-                    Log.d(TAG, "num.nextToken().isEmpty() --> " + curNum.isEmpty());
-                    Log.d(TAG, "num.nextToken().length() --> " + curNum.length());
-
+                    //numéro trop court
                     if (curNum.length() < 4) {
-                        Log.d(TAG, "num.nextToken().length() --> " + curNum.length());
+                        Log.d(TAG, "chip.getValue.lenght() --> " + curNum.length());
                         throw new TooShortNumException(curNum);
+                    }
+                    else {
+                        Log.d(TAG, "Numéro courant --> " + curNum);
 
-                    } else {
-                        Log.d(TAG, "num.nextToken() --> " + curNum);
-                        Log.d(TAG, "msg --> " + msg);
-
-                        int i;
-                        for ( i = 0 ; i<howMany.getValue(); i++) {
-
-
+                        for ( int i = 0 ; i < howMany.getValue(); i++) {
                             SmsManager.getDefault().sendTextMessage(curNum, null, msg, null, null);
-                            Log.d(TAG, " SMS envoyé");
+                            Log.d(TAG, "SMS envoyé");
                         }
-                            toaster.show(i + "messages envoyés à " + curNum +"!");
                     }
 
                 } catch (Exception e) {
@@ -156,73 +138,11 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                     toaster.show(e.getMessage());
                 }
-
-                ((EditText) findViewById(R.id.editMessage)).getText().clear();
-                Log.d(TAG, "Message effacé");
             }
+            toaster.show( "Messages envoyés !");
+            ((EditText) findViewById(R.id.editMessage)).getText().clear();
+            Log.d(TAG, "Message effacé");
         }
     }
 
-
-    public void pickContact(View view) {
-        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
-        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
-        startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PICK_CONTACT_REQUEST:
-                    Cursor cursor = null;
-                    String newNumber = "";
-                    String newName = "";
-
-                    try {
-                        Uri contactUri = data.getData();
-                        String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER
-                                , ContactsContract.Contacts.DISPLAY_NAME
-                        };
-                        cursor = getContentResolver().query(contactUri, projection, null, null, null);
-
-                        int phoneIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                        int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-
-
-                        if (cursor.moveToFirst()) {
-                            newNumber = cursor.getString(phoneIdx);
-                            newName = cursor.getString(nameIdx);
-                            Log.v(TAG, "Got number: " + newNumber);
-                            Log.v(TAG, "Got name: " + newName);
-
-                        } else {
-                            Log.w(TAG, "No results");
-                        }
-
-                    } catch (Exception e) {
-                        Log.e(TAG, "Failed to get phone data", e);
-
-                    } finally {
-                        if (cursor != null) {
-                            cursor.close();
-                        }
-
-                        EditText editNumbers = (EditText) findViewById(R.id.editPhoneNum);
-
-                        if (new StringTokenizer(editNumbers.getText().toString(), ",").hasMoreTokens()) {
-                            editNumbers.append("," + newNumber);
-                        } else {
-                            editNumbers.setText(newNumber);
-                        }
-                    }
-
-                    break;
-            }
-
-        } else {
-            Log.w(TAG, "Warning: activity result not ok");
-        }
-    }
 }

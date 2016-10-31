@@ -33,26 +33,18 @@
             android:layout_width="10dp"
             android:layout_height="10dp" />
 
-        <EditText
+        <com.android.ex.chips.RecipientEditTextView
+            android:id="@+id/chipsContact"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
             android:layout_weight="1"
-            android:hint="@string/edit_number"
-            android:id="@+id/editPhoneNum"
-            android:padding="@dimen/activity_vertical_margin"/>
-
-        <Space
-            android:layout_width="10dp"
-            android:layout_height="10dp" />
-
-        <Button
-            android:text="@string/browse_button"
-            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:id="@+id/browse_button"
-            android:onClick="pickContact"
-            style="@style/Widget.AppCompat.Light.ActionButton"
+            android:hint="Sélectionne un contact"
+            android:minHeight="58dp" />
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/show_all"
             />
 
     </LinearLayout>
@@ -133,13 +125,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.android.ex.chips.RecipientEditTextView
-            android:id="@+id/chipsContact"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="yolo"
-            android:minHeight="58dp" />
+
 
     </LinearLayout>
 
