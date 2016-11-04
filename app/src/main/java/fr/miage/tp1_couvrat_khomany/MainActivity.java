@@ -11,12 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,9 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected StringTokenizer getNumbers() {
         EditText text = (EditText) findViewById(R.id.editPhoneNum);
         String numbers = text.getText().toString();
-        StringTokenizer st = new StringTokenizer(numbers, ",");
 
-        return st;
+        return new StringTokenizer(numbers, ",");
     }
 
     // Récupère le contenu du message
@@ -106,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                             SmsManager.getDefault().sendTextMessage(curNum, null, msg, null, null);
                             Log.d(TAG, " SMS envoyé");
                         }
-                            toaster.show(i + "Messages envoyés !");
+                            toaster.show(i-1 +" messages envoyés !");
                     }
 
                 } catch (Exception e) {
@@ -124,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void pickContact(View view) {
         Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
-        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // utilisateurs avec numéro de téléphones
         startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
     }
 
@@ -148,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                         int phoneIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                         int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 
-                        // let's just get the first number
                         if (cursor.moveToFirst()) {
                             newNumber = cursor.getString(phoneIdx);
                             newName = cursor.getString(nameIdx);
@@ -178,9 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
             }
-
-        } else {
-            Log.w(TAG, "Warning: activity result not ok");
         }
     }
 }
